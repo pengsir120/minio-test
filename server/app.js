@@ -4,13 +4,14 @@ const bodyParser = require('body-parser'); // 解析 req.body
 const multer = require('multer');//formdata数据处理
 const cors = require('cors'); //设置允许跨域
 const upload = multer();
+const { accessKey, secretKey } = require('./config/config.default')
 
 const minioClient = new Minio.Client({
-  endPoint: '10.0.4.98',
+  endPoint: '127.0.0.1',
   port: 9000,
   useSSL: false,
-  accessKey: 'bGtbDOBGTDxuSmUk3gDH', //这里换成自己的
-  secretKey: 'URpf5daHtzBRhRB2nCyisscYMcM7P8UGqDVTXafQ', //这里换成自己的
+  accessKey,
+  secretKey
 });
 
 const app = express();
@@ -26,7 +27,7 @@ app.post('/upload', upload.single('file'), async (req, res) => {
     console.log(data);
     res.send({
       code: 200,
-      url: `http://10.0.4.98:9000/${bucketName}/${objectName}`, // 返回访问URL
+      url: `http://127.0.0.1:9000/${bucketName}/${objectName}`, // 返回访问URL
     });
   } catch (err) {
     res.status(500).send(err);
