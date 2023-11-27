@@ -1,12 +1,13 @@
 <template>
     <div class="minio-container common-container">
-        <el-button icon="el-icon-upload2" type="primary" @click="handleUploadFile">上传</el-button>
+        <el-button type="primary" @click="handleUploadPic">上传图片</el-button>
         <transition name="transition-preview">
             <div class="demo-image__preview" style="margin-top:20px" v-if="imageUrl">
                 <el-image style="width: 100px; height: 100px" :src="imageUrl" :preview-src-list="srcList">
                 </el-image>
             </div>
         </transition>
+        <el-button type="primary" @click="handleUploadVideo">上传视频</el-button>
     </div>
 </template>
 
@@ -24,7 +25,7 @@ export default {
     },
 
     methods: {
-        handleUploadFile() {
+        handleUploadPic() {
             const input = document.createElement("input");
             input.setAttribute("type", "file");
             input.setAttribute("multiple", "multiple");
@@ -43,6 +44,22 @@ export default {
                 if (data?.code && data.code == 200) {
                     _this.imageUrl = data.url;
                     _this.srcList = [].concat(data.url);
+                }
+            };
+            input.remove();
+        },
+        handleUploadVideo() {
+            const input = document.createElement("input");
+            input.setAttribute("type", "file");
+            input.click();
+            const _this = this; // 如果不想使用这种语法,onchange的函数换成箭头函数,即可解决this指向问题
+            input.onchange = async function (event) {
+                const file = event.target.files[0];
+                const formData = new FormData();
+                formData.append("file", file);
+                const data = await uploadImage(formData);
+                if (data?.code && data.code == 200) {
+                    console.log('成功');
                 }
             };
             input.remove();
