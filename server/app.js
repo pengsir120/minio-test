@@ -21,8 +21,10 @@ app.use(bodyParser.json());
 app.post('/upload', upload.single('file'), async (req, res) => {
   try {
     const file = req.file; // 获取上传文件
+    const fileArr = file.originalname.split('.')
+    const mimeType = fileArr[fileArr.length - 1]
     const bucketName = 'test'; //自己创建的桶名
-    const objectName = Date.now() + '_' + file.originalname; // 设置对象名称
+    const objectName = `${Date.now()}.${mimeType}`; // 设置对象名称
     const data = await minioClient.putObject(bucketName, objectName, file.buffer); // 上传到MinIO
     console.log(data);
     res.send({
