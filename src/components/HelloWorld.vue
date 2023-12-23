@@ -13,7 +13,7 @@
 
 <script>
 // import { Message } from "element-plus";
-import { isImage } from "@/utils";
+import { isImage, getVideoTime } from "@/utils";
 import { uploadImage } from "@/request/api";
 
 export default {
@@ -52,9 +52,16 @@ export default {
             const input = document.createElement("input");
             input.setAttribute("type", "file");
             input.click();
-            const _this = this; // 如果不想使用这种语法,onchange的函数换成箭头函数,即可解决this指向问题
             input.onchange = async function (event) {
                 const file = event.target.files[0];
+                const video = document.createElement('video')
+                video.preload = 'metadata'
+                video.src = URL.createObjectURL(file)
+                video.onloadedmetadata = function() {
+                  window.URL.revokeObjectURL(video.src)
+                  console.log(getVideoTime(video.duration));
+                }
+
                 const formData = new FormData();
                 formData.append("file", file);
                 const data = await uploadImage(formData);
